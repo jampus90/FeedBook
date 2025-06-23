@@ -25,7 +25,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create Account"
+            android:text="Criar uma conta"
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
@@ -52,13 +52,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     app:startIconDrawable="@drawable/ic_person"
-                    app:helperText="Username must be at least 3 characters">
+                    app:helperText="Usuário precisa ter no mínimo 3 letras">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Username"
+                        android:hint="Usuário"
                         android:inputType="text"
                         android:maxLines="1" />
 
@@ -72,13 +72,13 @@
                     android:layout_marginBottom="16dp"
                     app:startIconDrawable="@drawable/ic_lock"
                     app:endIconMode="password_toggle"
-                    app:helperText="Password must be at least 6 characters">
+                    app:helperText="Senha precisa ter no mínimo 6 caracteres">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Password"
+                        android:hint="Senha"
                         android:inputType="textPassword"
                         android:maxLines="1" />
 
@@ -97,7 +97,7 @@
                         android:id="@+id/et_confirm_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Confirm Password"
+                        android:hint="Confirme a senha"
                         android:inputType="textPassword"
                         android:maxLines="1" />
 
@@ -108,7 +108,7 @@
                     style="@style/Widget.BookLibrary.Button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Create Account"
+                    android:text="Criar conta"
                     android:layout_marginBottom="16dp" />
 
                 <ProgressBar
@@ -131,7 +131,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already have an account? "
+                android:text="Já tem uma conta? "
                 android:textSize="14sp"
                 android:textColor="?attr/colorOnBackground" />
 
@@ -139,7 +139,7 @@
                 android:id="@+id/tv_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Login here"
+                android:text="Entrar"
                 android:textSize="14sp"
                 android:textColor="?attr/colorPrimary"
                 android:textStyle="bold"

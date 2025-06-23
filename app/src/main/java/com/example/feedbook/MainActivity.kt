@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         tvBookCount = findViewById(R.id.tv_book_count)
 
         val currentUser = authViewModel.getCurrentUser()
-        tvWelcome.text = "Welcome back, $currentUser!"
+        tvWelcome.text = "Bem vindo, $currentUser!"
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -108,13 +108,13 @@ class MainActivity : AppCompatActivity() {
         sortSpinner = findViewById(R.id.spinner_sort)
 
         // Filter spinner
-        val filterOptions = arrayOf("All Books", "Read", "Unread")
+        val filterOptions = arrayOf("Todos", "Lidos", "Não lidos")
         val filterAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, filterOptions)
         filterSpinner.setAdapter(filterAdapter)
         filterSpinner.setText(filterOptions[0], false)
 
         // Sort spinner
-        val sortOptions = arrayOf("Alphabetical", "By Rating")
+        val sortOptions = arrayOf("Alfabética", "Por nota")
         val sortAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, sortOptions)
         sortSpinner.setAdapter(sortAdapter)
         sortSpinner.setText(sortOptions[0], false)
@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showBookMenu(book: Book) {
-        val options = arrayOf("Edit", "Delete")
+        val options = arrayOf("Editar", "Apagar")
         AlertDialog.Builder(this)
             .setTitle(book.title)
             .setItems(options) { _, which ->
@@ -167,12 +167,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showDeleteConfirmation(book: Book) {
         AlertDialog.Builder(this)
-            .setTitle("Delete Book")
-            .setMessage("Are you sure you want to delete \"${book.title}\"?")
-            .setPositiveButton("Delete") { _, _ ->
+            .setTitle("Apagar livro")
+            .setMessage("Tem certeza que deseja apagar o livro \"${book.title}\"?")
+            .setPositiveButton("Apagar") { _, _ ->
                 bookViewModel.deleteBook(book)
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton("Cancelar", null)
             .show()
     }
 
@@ -185,13 +185,13 @@ class MainActivity : AppCompatActivity() {
         val sortText = sortSpinner.text.toString()
 
         val filterPosition = when (filterText) {
-            "Read" -> 1
-            "Unread" -> 2
+            "Lido" -> 1
+            "Não lido" -> 2
             else -> 0
         }
 
         val sortPosition = when (sortText) {
-            "By Rating" -> 1
+            "Por nota" -> 1
             else -> 0
         }
 
@@ -226,9 +226,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateBookCount(count: Int) {
         tvBookCount.text = when (count) {
-            0 -> "No books in your library yet"
-            1 -> "You have 1 book in your library"
-            else -> "You have $count books in your library"
+            0 -> "Você ainda não cadastrou nenhum livro"
+            1 -> "Você tem 1 livro no seu FeedBook"
+            else -> "Você tem $count livros no seu FeedBook"
         }
     }
 
@@ -244,12 +244,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showLogoutConfirmation() {
         AlertDialog.Builder(this)
-            .setTitle("Logout")
-            .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Logout") { _, _ ->
+            .setTitle("Sair")
+            .setMessage("Tem certeza que deseja sair?")
+            .setPositiveButton("Sair") { _, _ ->
                 performLogout()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton("Cancelar", null)
             .show()
     }
 

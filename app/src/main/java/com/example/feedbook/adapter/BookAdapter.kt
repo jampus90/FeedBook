@@ -38,7 +38,7 @@ class BookAdapter(
 
         fun bind(book: Book) {
             titleTextView.text = book.title
-            authorTextView.text = "by ${book.author}"
+            authorTextView.text = "por ${book.author}"
 
             // Set rating stars
             ratingTextView.text = "★".repeat(book.rating) + "☆".repeat(5 - book.rating)
@@ -55,7 +55,7 @@ class BookAdapter(
             val context = itemView.context
 
             if (isRead) {
-                statusChip.text = "Read"
+                statusChip.text = "Lido"
                 statusChip.chipBackgroundColor = ColorStateList.valueOf(
                     ContextCompat.getColor(context, R.color.success_green)
                 )
@@ -65,7 +65,7 @@ class BookAdapter(
                     ContextCompat.getColor(context, android.R.color.white)
                 )
             } else {
-                statusChip.text = "Unread"
+                statusChip.text = "Não lido"
                 statusChip.chipBackgroundColor = ColorStateList.valueOf(
                     ContextCompat.getColor(context, R.color.warning_orange)
                 )

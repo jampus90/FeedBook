@@ -69,7 +69,7 @@
                             android:id="@+id/tv_welcome"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Welcome back!"
+                            android:text="Bem vindo!"
                             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                             android:textColor="?attr/colorOnPrimaryContainer" />
 
@@ -77,7 +77,7 @@
                             android:id="@+id/tv_book_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="You have 0 books in your library"
+                            android:text="Você tem 0 livros no seu FeedBook"
                             android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                             android:textColor="?attr/colorOnPrimaryContainer"
                             android:alpha="0.8" />
@@ -104,7 +104,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Filter &amp; Sort"
+                        android:text="Filtrar &amp; Ordenar"
                         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                         android:textColor="?attr/colorOnSurface"
                         android:layout_marginBottom="16dp" />
@@ -121,14 +121,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginEnd="8dp"
-                            android:hint="Filter by status">
+                            android:hint="Filtrar por status">
 
                             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                 android:id="@+id/spinner_filter"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
-                                android:text="All Books" />
+                                android:text="Todos" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -138,14 +138,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="8dp"
-                            android:hint="Sort by">
+                            android:hint="Ordenar por">
 
                             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                 android:id="@+id/spinner_sort"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
-                                android:text="Alphabetical" />
+                                android:text="Alfabética" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -167,7 +167,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Your Books"
+                    android:text="Seus livros"
                     android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
                     android:textColor="?android:colorBackground" />
 
@@ -215,7 +215,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No books yet"
+                    android:text="Sem livros"
                     android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_marginBottom="8dp" />
@@ -223,7 +223,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Start building your personal library by adding your first book"
+                    android:text="Comece adicionando seu primeiro livro"
                     android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:textAlignment="center"
@@ -234,7 +234,7 @@
                     style="@style/Widget.BookLibrary.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add Your First Book"
+                    android:text="Adicione seu primeiro livro"
                     app:icon="@drawable/ic_add"
                     app:iconGravity="textStart" />
 
@@ -251,7 +251,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:text="Add Book"
+        android:text="Adicionar livro"
         app:icon="@drawable/ic_add"
         app:iconGravity="textStart" />
 

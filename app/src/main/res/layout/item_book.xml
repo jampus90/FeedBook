@@ -115,7 +115,7 @@
                 app:chipMinHeight="28dp"
                 app:chipStartPadding="8dp"
                 app:chipEndPadding="8dp"
-                tools:text="Read" />
+                tools:text="Lido" />
 
         </LinearLayout>
 
@@ -130,7 +130,7 @@
             app:iconTint="?attr/colorOnSurfaceVariant"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="More options" />
+            android:contentDescription="Mais opções" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
