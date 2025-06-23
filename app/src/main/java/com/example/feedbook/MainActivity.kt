@@ -5,18 +5,21 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.feedbook.adapter.BookAdapter
+import com.example.feedbook.data.Book
 import com.example.feedbook.viewmodel.AuthViewModel
 import com.example.feedbook.viewmodel.BookViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import kotlinx.coroutines.launch
 import com.example.booklibrary.R
 
@@ -31,8 +34,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var bookAdapter: BookAdapter
-    private lateinit var filterSpinner: Spinner
-    private lateinit var sortSpinner: Spinner
+    private lateinit var filterSpinner: MaterialAutoCompleteTextView
+    private lateinit var sortSpinner: MaterialAutoCompleteTextView
+    private lateinit var tvWelcome: TextView
+    private lateinit var tvBookCount: TextView
+    private lateinit var rvBooks: RecyclerView
+    private lateinit var layoutEmptyState: View
+    private lateinit var toolbar: MaterialToolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,14 +53,23 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        // Set up toolbar
-        supportActionBar?.title = "Meu FeedBook"
-        supportActionBar?.subtitle = "Bem vindo, ${authViewModel.getCurrentUser()}"
-
+        setupToolbar()
         setupViews()
         setupSpinners()
         setupRecyclerView()
         observeBooks()
+    }
+
+    private fun setupToolbar() {
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        // Set welcome message
+        tvWelcome = findViewById(R.id.tv_welcome)
+        tvBookCount = findViewById(R.id.tv_book_count)
+
+        val currentUser = authViewModel.getCurrentUser()
+        tvWelcome.text = "Bem vindo, $currentUser!"
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -71,8 +88,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        val fabAddBook: FloatingActionButton = findViewById(R.id.fab_add_book)
+        rvBooks = findViewById(R.id.rv_books)
+        layoutEmptyState = findViewById(R.id.layout_empty_state)
+
+        val fabAddBook: ExtendedFloatingActionButton = findViewById(R.id.fab_add_book)
+        val btnAddFirstBook: MaterialButton = findViewById(R.id.btn_add_first_book)
+
         fabAddBook.setOnClickListener {
+            startActivity(Intent(this, AddEditBookActivity::class.java))
+        }
+
+        btnAddFirstBook.setOnClickListener {
             startActivity(Intent(this, AddEditBookActivity::class.java))
         }
     }
@@ -83,41 +109,71 @@ class MainActivity : AppCompatActivity() {
 
         // Filter spinner
         val filterOptions = arrayOf("Todos", "Lidos", "Não lidos")
-        val filterAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, filterOptions)
-        filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        filterSpinner.adapter = filterAdapter
+        val filterAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, filterOptions)
+        filterSpinner.setAdapter(filterAdapter)
+        filterSpinner.setText(filterOptions[0], false)
 
         // Sort spinner
-        val sortOptions = arrayOf("Ordem alfabética", "Por nota")
-        val sortAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortOptions)
-        sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        sortSpinner.adapter = sortAdapter
+        val sortOptions = arrayOf("Alfabética", "Por nota")
+        val sortAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, sortOptions)
+        sortSpinner.setAdapter(sortAdapter)
+        sortSpinner.setText(sortOptions[0], false)
 
         // Set listeners
-        filterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                updateBookList()
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        filterSpinner.setOnItemClickListener { _, _, _, _ ->
+            updateBookList()
         }
 
-        sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                updateBookList()
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        sortSpinner.setOnItemClickListener { _, _, _, _ ->
+            updateBookList()
         }
     }
 
     private fun setupRecyclerView() {
-        bookAdapter = BookAdapter { book ->
-            val intent = Intent(this, AddEditBookActivity::class.java)
-            intent.putExtra("BOOK_ID", book.id)
-            startActivity(intent)
-        }
+        bookAdapter = BookAdapter(
+            onBookClick = { book ->
+                val intent = Intent(this, AddEditBookActivity::class.java)
+                intent.putExtra("BOOK_ID", book.id)
+                startActivity(intent)
+            },
+            onMenuClick = { book ->
+                showBookMenu(book)
+            }
+        )
 
-        val recyclerView: RecyclerView = findViewById(R.id.rv_books)
-        recyclerView.adapter = bookAdapter
+        rvBooks.adapter = bookAdapter
+    }
+
+    private fun showBookMenu(book: Book) {
+        val options = arrayOf("Editar", "Apagar")
+        AlertDialog.Builder(this)
+            .setTitle(book.title)
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> {
+                        // Edit
+                        val intent = Intent(this, AddEditBookActivity::class.java)
+                        intent.putExtra("BOOK_ID", book.id)
+                        startActivity(intent)
+                    }
+                    1 -> {
+                        // Delete
+                        showDeleteConfirmation(book)
+                    }
+                }
+            }
+            .show()
+    }
+
+    private fun showDeleteConfirmation(book: Book) {
+        AlertDialog.Builder(this)
+            .setTitle("Apagar livro")
+            .setMessage("Tem certeza que deseja apagar o livro \"${book.title}\"?")
+            .setPositiveButton("Apagar") { _, _ ->
+                bookViewModel.deleteBook(book)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     private fun observeBooks() {
@@ -125,8 +181,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateBookList() {
-        val filterPosition = filterSpinner.selectedItemPosition
-        val sortPosition = sortSpinner.selectedItemPosition
+        val filterText = filterSpinner.text.toString()
+        val sortText = sortSpinner.text.toString()
+
+        val filterPosition = when (filterText) {
+            "Lido" -> 1
+            "Não lido" -> 2
+            else -> 0
+        }
+
+        val sortPosition = when (sortText) {
+            "Por nota" -> 1
+            else -> 0
+        }
 
         lifecycleScope.launch {
             val flow = when (filterPosition) {
@@ -149,15 +216,36 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     books
                 }
+
                 bookAdapter.submitList(sortedBooks)
+                updateBookCount(sortedBooks.size)
+                updateEmptyState(sortedBooks.isEmpty())
             }
+        }
+    }
+
+    private fun updateBookCount(count: Int) {
+        tvBookCount.text = when (count) {
+            0 -> "Você ainda não cadastrou nenhum livro"
+            1 -> "Você tem 1 livro no seu FeedBook"
+            else -> "Você tem $count livros no seu FeedBook"
+        }
+    }
+
+    private fun updateEmptyState(isEmpty: Boolean) {
+        if (isEmpty) {
+            rvBooks.visibility = View.GONE
+            layoutEmptyState.visibility = View.VISIBLE
+        } else {
+            rvBooks.visibility = View.VISIBLE
+            layoutEmptyState.visibility = View.GONE
         }
     }
 
     private fun showLogoutConfirmation() {
         AlertDialog.Builder(this)
-            .setTitle("Logout")
-            .setMessage("Tem certeza que quer sair?")
+            .setTitle("Sair")
+            .setMessage("Tem certeza que deseja sair?")
             .setPositiveButton("Sair") { _, _ ->
                 performLogout()
             }

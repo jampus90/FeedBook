@@ -34,12 +34,14 @@
         <!-- Main Activity -->
         <activity
             android:name="com.example.feedbook.MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.BookLibrary.NoActionBar" />
 
         <!-- Add/Edit Book Activity -->
         <activity
             android:name="com.example.feedbook.AddEditBookActivity"
             android:exported="false"
+            android:theme="@style/Theme.BookLibrary"
             android:parentActivityName="com.example.feedbook.MainActivity" />
 
     </application>
