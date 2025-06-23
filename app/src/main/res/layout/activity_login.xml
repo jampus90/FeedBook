@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
     android:gravity="center"
-    android:background="@color/background_color">
+    android:background="?android:colorBackground">
 
     <!-- App Logo/Title -->
     <ImageView
@@ -13,15 +14,16 @@
         android:layout_height="120dp"
         android:src="@drawable/ic_book_library"
         android:layout_marginBottom="32dp"
-        android:contentDescription="Book Library Logo" />
+        android:contentDescription="Book Library Logo"
+        app:tint="?attr/colorPrimary" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FeedBook"
+        android:text="Book Library"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="@color/primary_color"
+        android:textColor="?attr/colorPrimary"
         android:layout_marginBottom="48dp" />
 
     <!-- Login Form -->
@@ -30,8 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        app:cardElevation="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,13 +43,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bem vindo"
+                android:text="Welcome Back"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
                 android:layout_marginBottom="24dp"
                 android:layout_gravity="center" />
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.BookLibrary.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -58,7 +61,7 @@
                     android:id="@+id/et_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Usuário"
+                    android:hint="Username"
                     android:inputType="text"
                     android:maxLines="1" />
 
@@ -66,6 +69,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_password"
+                style="@style/Widget.BookLibrary.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
@@ -76,18 +80,18 @@
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Senha"
+                    android:hint="Password"
                     android:inputType="textPassword"
                     android:maxLines="1" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_login"
+                style="@style/Widget.BookLibrary.Button"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:text="Login"
-                android:textSize="16sp"
                 android:layout_marginBottom="16dp" />
 
             <ProgressBar
@@ -110,20 +114,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Não tem uma conta? "
-            android:textSize="14sp" />
+            android:text="Don't have an account? "
+            android:textSize="14sp"
+            android:textColor="?attr/colorOnBackground" />
 
         <TextView
             android:id="@+id/tv_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Criar"
+            android:text="Register here"
             android:textSize="14sp"
-            android:textColor="@color/primary_color"
+            android:textColor="?attr/colorPrimary"
             android:textStyle="bold"
             android:clickable="true"
             android:focusable="true"
-            android:background="?android:attr/selectableItemBackground"
+            android:background="?attr/selectableItemBackground"
             android:padding="8dp" />
 
     </LinearLayout>
