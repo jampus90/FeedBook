@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.Flow
 
 class BookRepository(private val bookDao: BookDao) {
 
-    fun getAllBooksAlphabetically(): Flow<List<Book>> = bookDao.getAllBooksAlphabetically()
+    fun getAllBooksAlphabetically(userId: Int): Flow<List<Book>> = bookDao.getAllBooksAlphabetically(userId)
 
-    fun getAllBooksByRating(): Flow<List<Book>> = bookDao.getAllBooksByRating()
+    fun getAllBooksByRating(userId: Int): Flow<List<Book>> = bookDao.getAllBooksByRating(userId)
 
-    fun getBooksByReadStatus(isRead: Boolean): Flow<List<Book>> = bookDao.getBooksByReadStatus(isRead)
+    fun getBooksByReadStatus(userId: Int, isRead: Boolean): Flow<List<Book>> = bookDao.getBooksByReadStatus(userId, isRead)
 
-    suspend fun getBookById(id: Int): Book? = bookDao.getBookById(id)
+    suspend fun getBookById(id: Int, userId: Int): Book? = bookDao.getBookById(id, userId)
 
     suspend fun insertBook(book: Book) = bookDao.insertBook(book)
 

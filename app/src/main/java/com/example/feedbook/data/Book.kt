@@ -11,5 +11,6 @@ data class Book(
     val author: String,
     val description: String,
     val rating: Int, // 1-5 stars
-    val isRead: Boolean = false
+    val isRead: Boolean = false,
+    val userId: Int // Link to the user who added this book
 )

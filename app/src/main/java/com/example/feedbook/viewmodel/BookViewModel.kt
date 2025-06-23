@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.feedbook.auth.AuthManager
 import com.example.feedbook.data.Book
 import com.example.feedbook.data.BookDatabase
 import com.example.feedbook.repository.BookRepository
@@ -14,30 +15,40 @@ import kotlinx.coroutines.launch
 class BookViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: BookRepository
+    private val authManager: AuthManager = AuthManager(application)
 
     init {
         val bookDao = BookDatabase.getDatabase(application).bookDao()
         repository = BookRepository(bookDao)
     }
 
-    fun getAllBooksAlphabetically(): Flow<List<Book>> = repository.getAllBooksAlphabetically()
+    private fun getCurrentUserId(): Int = authManager.getCurrentUserId()
 
-    fun getAllBooksByRating(): Flow<List<Book>> = repository.getAllBooksByRating()
+    fun getAllBooksAlphabetically(): Flow<List<Book>> = repository.getAllBooksAlphabetically(getCurrentUserId())
 
-    fun getBooksByReadStatus(isRead: Boolean): Flow<List<Book>> = repository.getBooksByReadStatus(isRead)
+    fun getAllBooksByRating(): Flow<List<Book>> = repository.getAllBooksByRating(getCurrentUserId())
 
-    suspend fun getBookById(id: Int): Book? = repository.getBookById(id)
+    fun getBooksByReadStatus(isRead: Boolean): Flow<List<Book>> = repository.getBooksByReadStatus(getCurrentUserId(), isRead)
+
+    suspend fun getBookById(id: Int): Book? = repository.getBookById(id, getCurrentUserId())
 
     fun insertBook(book: Book) = viewModelScope.launch {
-        repository.insertBook(book)
+        val bookWithUserId = book.copy(userId = getCurrentUserId())
+        repository.insertBook(bookWithUserId)
     }
 
     fun updateBook(book: Book) = viewModelScope.launch {
-        repository.updateBook(book)
+        // Ensure the book belongs to the current user
+        if (book.userId == getCurrentUserId()) {
+            repository.updateBook(book)
+        }
     }
 
     fun deleteBook(book: Book) = viewModelScope.launch {
-        repository.deleteBook(book)
+        // Ensure the book belongs to the current user
+        if (book.userId == getCurrentUserId()) {
+            repository.deleteBook(book)
+        }
     }
 
     class BookViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

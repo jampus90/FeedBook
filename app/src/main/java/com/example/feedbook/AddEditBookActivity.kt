@@ -11,14 +11,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.feedbook.data.Book
 import com.example.feedbook.viewmodel.BookViewModel
+import com.example.feedbook.viewmodel.AuthViewModel
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
+import android.content.Intent
 import com.example.booklibrary.R
 
 class AddEditBookActivity : AppCompatActivity() {
 
     private val bookViewModel: BookViewModel by viewModels {
         BookViewModel.BookViewModelFactory(application)
+    }
+
+    private val authViewModel: AuthViewModel by viewModels {
+        AuthViewModel.AuthViewModelFactory(application)
     }
 
     private lateinit var etTitle: TextInputEditText
@@ -34,6 +40,14 @@ class AddEditBookActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Check authentication
+        if (!authViewModel.isLoggedIn()) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_add_edit_book)
 
         bookId = intent.getIntExtra("BOOK_ID", -1)
@@ -44,9 +58,9 @@ class AddEditBookActivity : AppCompatActivity() {
         if (bookId != -1) {
             loadBook()
             btnDelete.visibility = Button.VISIBLE
-            title = "Edit Book"
+            title = "Editar livro"
         } else {
-            title = "Add Book"
+            title = "Adicionar livro"
         }
     }
 
@@ -91,24 +105,25 @@ class AddEditBookActivity : AppCompatActivity() {
         val isRead = cbIsRead.isChecked
 
         if (title.isEmpty() || author.isEmpty()) {
-            Toast.makeText(this, "Please fill in title and author", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Por favor insira o título e autor do livro", Toast.LENGTH_SHORT).show()
             return
         }
 
         lifecycleScope.launch {
             if (bookId == -1) {
-                // Add new book
+                // Add new book - userId will be set automatically in BookViewModel.insertBook()
                 val newBook = Book(
                     title = title,
                     author = author,
                     description = description,
                     rating = rating,
-                    isRead = isRead
+                    isRead = isRead,
+                    userId = authViewModel.getCurrentUserId() // Set current user's ID
                 )
                 bookViewModel.insertBook(newBook)
-                Toast.makeText(this@AddEditBookActivity, "Book added successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AddEditBookActivity, "Livro adicionado com sucesso", Toast.LENGTH_SHORT).show()
             } else {
-                // Update existing book
+                // Update existing book - preserve the original userId
                 currentBook?.let { book ->
                     val updatedBook = book.copy(
                         title = title,
@@ -116,9 +131,10 @@ class AddEditBookActivity : AppCompatActivity() {
                         description = description,
                         rating = rating,
                         isRead = isRead
+                        // userId remains the same
                     )
                     bookViewModel.updateBook(updatedBook)
-                    Toast.makeText(this@AddEditBookActivity, "Book updated successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AddEditBookActivity, "Livro atualizado com sucesso", Toast.LENGTH_SHORT).show()
                 }
             }
             finish()
@@ -127,12 +143,12 @@ class AddEditBookActivity : AppCompatActivity() {
 
     private fun showDeleteConfirmation() {
         AlertDialog.Builder(this)
-            .setTitle("Delete Book")
-            .setMessage("Are you sure you want to delete this book?")
-            .setPositiveButton("Delete") { _, _ ->
+            .setTitle("Deletar livro")
+            .setMessage("Tem certeza que deseja deletar este livro?")
+            .setPositiveButton("Deletar") { _, _ ->
                 deleteBook()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton("Cancelar", null)
             .show()
     }
 
@@ -140,7 +156,7 @@ class AddEditBookActivity : AppCompatActivity() {
         currentBook?.let { book ->
             lifecycleScope.launch {
                 bookViewModel.deleteBook(book)
-                Toast.makeText(this@AddEditBookActivity, "Book deleted successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AddEditBookActivity, "Livro deletado com sucesso", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }

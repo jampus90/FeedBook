@@ -2,15 +2,19 @@ package com.example.feedbook
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.feedbook.adapter.BookAdapter
+import com.example.feedbook.viewmodel.AuthViewModel
 import com.example.feedbook.viewmodel.BookViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
@@ -22,18 +26,48 @@ class MainActivity : AppCompatActivity() {
         BookViewModel.BookViewModelFactory(application)
     }
 
+    private val authViewModel: AuthViewModel by viewModels {
+        AuthViewModel.AuthViewModelFactory(application)
+    }
+
     private lateinit var bookAdapter: BookAdapter
     private lateinit var filterSpinner: Spinner
     private lateinit var sortSpinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Check authentication
+        if (!authViewModel.isLoggedIn()) {
+            navigateToLogin()
+            return
+        }
+
         setContentView(R.layout.activity_main)
+
+        // Set up toolbar
+        supportActionBar?.title = "Meu FeedBook"
+        supportActionBar?.subtitle = "Bem vindo, ${authViewModel.getCurrentUser()}"
 
         setupViews()
         setupSpinners()
         setupRecyclerView()
         observeBooks()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_logout -> {
+                showLogoutConfirmation()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setupViews() {
@@ -48,13 +82,13 @@ class MainActivity : AppCompatActivity() {
         sortSpinner = findViewById(R.id.spinner_sort)
 
         // Filter spinner
-        val filterOptions = arrayOf("All Books", "Read", "Unread")
+        val filterOptions = arrayOf("Todos", "Lidos", "Não lidos")
         val filterAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, filterOptions)
         filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         filterSpinner.adapter = filterAdapter
 
         // Sort spinner
-        val sortOptions = arrayOf("Alphabetical", "By Rating")
+        val sortOptions = arrayOf("Ordem alfabética", "Por nota")
         val sortAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortOptions)
         sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sortSpinner.adapter = sortAdapter
@@ -120,8 +154,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showLogoutConfirmation() {
+        AlertDialog.Builder(this)
+            .setTitle("Logout")
+            .setMessage("Tem certeza que quer sair?")
+            .setPositiveButton("Sair") { _, _ ->
+                performLogout()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun performLogout() {
+        authViewModel.logout()
+        navigateToLogin()
+    }
+
+    private fun navigateToLogin() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+    }
+
     override fun onResume() {
         super.onResume()
+        // Check authentication on resume
+        if (!authViewModel.isLoggedIn()) {
+            navigateToLogin()
+            return
+        }
         updateBookList()
     }
 }

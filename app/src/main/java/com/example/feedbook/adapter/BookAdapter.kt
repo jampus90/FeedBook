@@ -34,7 +34,7 @@ class BookAdapter(
             titleTextView.text = book.title
             authorTextView.text = "by ${book.author}"
             ratingTextView.text = "★".repeat(book.rating) + "☆".repeat(5 - book.rating)
-            statusTextView.text = if (book.isRead) "Read" else "Unread"
+            statusTextView.text = if (book.isRead) "Lido" else "Não lido"
             statusTextView.setTextColor(
                 if (book.isRead)
                     itemView.context.getColor(android.R.color.holo_green_dark)
