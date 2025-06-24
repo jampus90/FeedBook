@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         sortSpinner = findViewById(R.id.spinner_sort)
 
         // Filter spinner
-        val filterOptions = arrayOf("Todos", "Lidos", "Não lidos")
+        val filterOptions = arrayOf("Todos", "Lido", "Não lido")
         val filterAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, filterOptions)
         filterSpinner.setAdapter(filterAdapter)
         filterSpinner.setText(filterOptions[0], false)
